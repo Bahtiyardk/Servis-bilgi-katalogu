@@ -22,7 +22,17 @@ function isAuthorized(req) {
     return false;
   }
 
-  const credentials = Buffer.from(header.slice(6), 'base64').toString('utf8');
+  const encodedCredentials = header.slice(6).trim();
+  if (!encodedCredentials || !/^[A-Za-z0-9+/=]+$/.test(encodedCredentials)) {
+    return false;
+  }
+
+  const credentials = Buffer.from(encodedCredentials, 'base64').toString('utf8');
+  const separatorIndex = credentials.indexOf(':');
+  if (!credentials || separatorIndex <= 0 || separatorIndex !== credentials.lastIndexOf(':')) {
+    return false;
+  }
+
   return credentials === `${USERNAME}:${PASSWORD}`;
 }
 
@@ -46,11 +56,17 @@ function getContentType(filePath) {
 
 function resolveFilePath(urlPath) {
   const decodedPath = decodeURIComponent(urlPath.split('?')[0]);
-  const normalizedPath = path.normalize(decodedPath).replace(/^([.][.][/\\])+/, '');
+  const pathSegments = decodedPath.split(/[\\/]+/).filter(Boolean);
+  if (pathSegments.includes('..')) {
+    return null;
+  }
+
+  const normalizedPath = path.normalize(decodedPath);
   const relativePath = normalizedPath === '/' ? 'index.html' : normalizedPath.replace(/^[/\\]+/, '');
   const absolutePath = path.resolve(PUBLIC_DIR, relativePath);
+  const relativeToPublicDir = path.relative(PUBLIC_DIR, absolutePath);
 
-  if (!absolutePath.startsWith(PUBLIC_DIR)) {
+  if (relativeToPublicDir.startsWith('..') || path.isAbsolute(relativeToPublicDir)) {
     return null;
   }
 
