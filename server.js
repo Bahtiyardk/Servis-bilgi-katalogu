@@ -29,11 +29,13 @@ function isAuthorized(req) {
 
   const credentials = Buffer.from(encodedCredentials, 'base64').toString('utf8');
   const separatorIndex = credentials.indexOf(':');
-  if (!credentials || separatorIndex <= 0 || separatorIndex !== credentials.lastIndexOf(':')) {
+  if (!credentials || separatorIndex <= 0) {
     return false;
   }
 
-  return credentials === `${USERNAME}:${PASSWORD}`;
+  const username = credentials.slice(0, separatorIndex);
+  const password = credentials.slice(separatorIndex + 1);
+  return username === USERNAME && password === PASSWORD;
 }
 
 function getContentType(filePath) {
@@ -55,7 +57,13 @@ function getContentType(filePath) {
 }
 
 function resolveFilePath(urlPath) {
-  const decodedPath = decodeURIComponent(urlPath.split('?')[0]);
+  let decodedPath;
+  try {
+    decodedPath = decodeURIComponent(urlPath.split('?')[0]);
+  } catch {
+    return null;
+  }
+
   const pathSegments = decodedPath.split(/[\\/]+/).filter(Boolean);
   if (pathSegments.includes('..')) {
     return null;
