@@ -1,0 +1,17 @@
+{
+  "name": "servis-bilgi-katalogu",
+  "version": "1.0.0",
+  "description": "Basic auth protected static site server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://localhost:26831/Bahtiyardk/Servis-bilgi-katalogu"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
