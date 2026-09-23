@@ -56,6 +56,15 @@ function getContentType(filePath) {
   return contentTypes[ext] || 'application/octet-stream';
 }
 
+function isPathInsidePublicDir(absolutePath) {
+  const relativeToPublicDir = path.relative(PUBLIC_DIR, absolutePath);
+  return !(
+    relativeToPublicDir === '..' ||
+    relativeToPublicDir.startsWith(`..${path.sep}`) ||
+    path.isAbsolute(relativeToPublicDir)
+  );
+}
+
 function resolveFilePath(urlPath) {
   let decodedPath;
   try {
@@ -72,9 +81,8 @@ function resolveFilePath(urlPath) {
   const normalizedPath = path.normalize(decodedPath);
   const relativePath = normalizedPath === '/' ? 'index.html' : normalizedPath.replace(/^[/\\]+/, '');
   const absolutePath = path.resolve(PUBLIC_DIR, relativePath);
-  const relativeToPublicDir = path.relative(PUBLIC_DIR, absolutePath);
 
-  if (relativeToPublicDir.startsWith('..') || path.isAbsolute(relativeToPublicDir)) {
+  if (!isPathInsidePublicDir(absolutePath)) {
     return null;
   }
 
@@ -125,5 +133,6 @@ if (require.main === module) {
 
 module.exports = {
   createServer,
+  isPathInsidePublicDir,
   resolveFilePath,
 };

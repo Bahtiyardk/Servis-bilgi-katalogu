@@ -1,6 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createServer, resolveFilePath } = require('../server');
+const path = require('node:path');
+
+const { createServer, isPathInsidePublicDir, resolveFilePath } = require('../server');
 
 const authHeader = `Basic ${Buffer.from('admin:43214321').toString('base64')}`;
 
@@ -68,4 +70,16 @@ test('serves site files when valid basic auth is provided', async () => {
 test('blocks path traversal outside public directory', () => {
   const resolvedPath = resolveFilePath('/../README.md');
   assert.equal(resolvedPath, null);
+});
+
+test('rejects sibling paths outside public directory even with matching prefix', () => {
+  const publicDir = path.resolve(path.join(__dirname, '..', 'public'));
+  const siblingPath = path.resolve(publicDir, '../public-other/file.txt');
+  assert.equal(isPathInsidePublicDir(siblingPath), false);
+});
+
+test('allows in-directory names that start with two dots', () => {
+  const publicDir = path.resolve(path.join(__dirname, '..', 'public'));
+  const inDirectoryPath = path.resolve(publicDir, '..healthcheck.txt');
+  assert.equal(isPathInsidePublicDir(inDirectoryPath), true);
 });
