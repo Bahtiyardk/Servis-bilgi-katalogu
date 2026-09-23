@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Cihaz kılavuzlarında marka, model ve hata koduna göre çözüm arayın." />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Cihaz Arıza Asistanı</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img"><path d="M14 8h20l6 10-16 22L8 18 14 8Z"/><path d="m14 8 10 32L34 8M8 18h32"/></svg>
+        </div>
+        <div>
+          <p class="eyebrow">TEKNİK BİLGİ MERKEZİ</p>
+          <h1>Cihaz Arıza Asistanı</h1>
+          <p class="hero-copy">Kılavuz arşivinde marka, model ve hata koduna göre saniyeler içinde arama yapın.</p>
+        </div>
+        <div class="hero-badge">
+          <span class="pulse"></span>
+          <span>Çevrimiçi</span>
+        </div>
+      </header>
+
+      <main>
+        <section class="search-panel" aria-labelledby="search-title">
+          <div class="panel-heading">
+            <div>
+              <p class="step-label">HIZLI ARAMA</p>
+              <h2 id="search-title">Cihazı ve hata kodunu seçin</h2>
+            </div>
+            <p id="catalog-summary" class="catalog-summary">Katalog yükleniyor…</p>
+          </div>
+
+          <form id="search-form" class="search-grid">
+            <label class="field">
+              <span><b>1</b> Marka</span>
+              <select id="brand-select" required disabled>
+                <option value="">Marka seçin</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span><b>2</b> Cihaz modeli</span>
+              <select id="model-select" required disabled>
+                <option value="">Önce marka seçin</option>
+              </select>
+            </label>
+
+            <label class="field field-error">
+              <span><b>3</b> Hata kodu veya arıza</span>
+              <div class="input-wrap">
+                <input id="error-input" type="text" placeholder="Örn. Err12, E04 veya sıcaklık yükselmiyor" autocomplete="off" required />
+                <button id="clear-query" class="clear-button" type="button" aria-label="Aramayı temizle" hidden>×</button>
+              </div>
+            </label>
+
+            <button id="search-button" class="primary-button" type="submit" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+              <span>Çözüm ara</span>
+            </button>
+          </form>
+
+          <div id="status" class="status" role="status" aria-live="polite">
+            <span class="status-dot"></span>
+            <span>Veri kataloğu hazırlanıyor…</span>
+          </div>
+        </section>
+
+        <section id="results-section" class="workspace" hidden>
+          <aside class="results-column">
+            <div class="section-title-row">
+              <div>
+                <p class="step-label">EŞLEŞMELER</p>
+                <h2>Bulunan kaynaklar</h2>
+              </div>
+              <span id="result-count" class="count-badge">0</span>
+            </div>
+            <div id="results-list" class="results-list"></div>
+          </aside>
+
+          <article class="detail-column">
+            <div id="detail-empty" class="empty-detail">
+              <div class="empty-icon">⌁</div>
+              <h2>Bir sonuç seçin</h2>
+              <p>Kaynak metin ve ücretsiz Türkçe teknik yorum burada görüntülenecek.</p>
+            </div>
+
+            <div id="detail-content" hidden>
+              <div class="detail-header">
+                <div>
+                  <p class="step-label">KAYNAK BELGE</p>
+                  <h2 id="detail-title"></h2>
+                </div>
+                <button id="copy-button" class="ghost-button" type="button">Metni kopyala</button>
+              </div>
+
+              <div class="source-path" id="source-path"></div>
+              <div class="source-text" id="source-text"></div>
+
+              <section class="comment-card" aria-labelledby="comment-title">
+                <div class="comment-heading">
+                  <div class="spark-icon" aria-hidden="true">✦</div>
+                  <div>
+                    <p class="step-label">ÜCRETSİZ • API GEREKTİRMEZ</p>
+                    <h3 id="comment-title">Türkçe teknik yorum</h3>
+                  </div>
+                </div>
+                <div id="turkish-comment"></div>
+              </section>
+
+              <div class="safety-note">
+                <strong>Güvenlik notu</strong>
+                <p>Elektrik, soğutucu akışkan, basınçlı gaz/buhar veya biyogüvenlik işlemlerinde üreticinin servis prosedürünü izleyin. Koruyucu, sensör ve basınç emniyetlerini devre dışı bırakmayın.</p>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section id="welcome" class="welcome-card">
+          <div class="welcome-visual" aria-hidden="true">
+            <svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="54"/><path d="M50 43h40v54H50zM58 54h24M58 64h24M58 80h10M76 80h6"/><circle cx="100" cy="96" r="19"/><path d="m114 110 13 13"/></svg>
+          </div>
+          <div>
+            <p class="step-label">NASIL ÇALIŞIR?</p>
+            <h2>Üç adımda doğru kaynağa ulaşın</h2>
+            <div class="how-grid">
+              <div><span>01</span><p>Markayı seçin</p></div>
+              <div><span>02</span><p>Modeli belirleyin</p></div>
+              <div><span>03</span><p>Hata kodunu yazın</p></div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <span>Belge arşivi tarayıcıda aranır; kaynak dosyalar ve aramalar başka bir servise gönderilmez.</span>
+        <span id="data-version"></span>
+      </footer>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
