@@ -12,7 +12,44 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div class="page-shell">
+    <div id="auth-shell" class="auth-shell">
+      <section class="auth-card" aria-labelledby="login-title">
+        <div class="brand-mark auth-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img"><path d="M14 8h20l6 10-16 22L8 18 14 8Z"/><path d="m14 8 10 32L34 8M8 18h32"/></svg>
+        </div>
+        <p class="eyebrow">GÜVENLİ GİRİŞ</p>
+        <h1 id="login-title">Cihaz Arıza Asistanı</h1>
+        <p class="auth-copy">Devam etmek için kullanıcı bilgilerinizle giriş yapın. Giriş yapılmadan katalog ve arama alanı gösterilmez.</p>
+
+        <form id="login-form" class="auth-form">
+          <label class="field">
+            <span>Kullanıcı adı</span>
+            <input id="username-input" type="text" inputmode="text" autocomplete="username" placeholder="Kullanıcı adını girin" required />
+          </label>
+
+          <label class="field">
+            <span>Şifre</span>
+            <input id="password-input" type="password" autocomplete="current-password" placeholder="Şifreyi girin" required />
+          </label>
+
+          <button id="login-button" class="primary-button auth-button" type="submit">
+            <span>Giriş yap</span>
+          </button>
+        </form>
+
+        <div id="login-status" class="auth-status" role="status" aria-live="polite">
+          <span class="status-dot"></span>
+          <span>Devam etmek için giriş yapın.</span>
+        </div>
+
+        <div class="auth-note">
+          <strong>Önemli not</strong>
+          <p>Bu site statik olarak yayınlandığı için giriş kontrolü tarayıcıda uygulanır. Bu akış içerik görünürlüğünü sınırlar; gerçek sunucu tarafı kimlik doğrulaması yerine geçmez.</p>
+        </div>
+      </section>
+    </div>
+
+    <div id="app-shell" class="page-shell" hidden>
       <header class="hero">
         <div class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 48 48" role="img"><path d="M14 8h20l6 10-16 22L8 18 14 8Z"/><path d="m14 8 10 32L34 8M8 18h32"/></svg>
@@ -22,9 +59,12 @@
           <h1>Cihaz Arıza Asistanı</h1>
           <p class="hero-copy">Kılavuz arşivinde marka, model ve hata koduna göre saniyeler içinde arama yapın.</p>
         </div>
-        <div class="hero-badge">
-          <span class="pulse"></span>
-          <span>Çevrimiçi</span>
+        <div class="hero-actions">
+          <div class="hero-badge">
+            <span class="pulse"></span>
+            <span>Çevrimiçi</span>
+          </div>
+          <button id="logout-button" class="ghost-button logout-button" type="button">Çıkış yap</button>
         </div>
       </header>
 

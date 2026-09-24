@@ -1,6 +1,13 @@
 import { searchRecords, turkishInterpretation } from "./search-core.js";
 
 const ui = {
+  authShell: document.querySelector("#auth-shell"),
+  appShell: document.querySelector("#app-shell"),
+  loginForm: document.querySelector("#login-form"),
+  username: document.querySelector("#username-input"),
+  password: document.querySelector("#password-input"),
+  loginStatus: document.querySelector("#login-status"),
+  logout: document.querySelector("#logout-button"),
   form: document.querySelector("#search-form"),
   brand: document.querySelector("#brand-select"),
   model: document.querySelector("#model-select"),
@@ -26,11 +33,20 @@ const ui = {
 let catalog;
 let currentResults = [];
 let selectedIndex = -1;
+let appInitialized = false;
 const shardCache = new Map();
+const AUTH_STORAGE_KEY = "servis-bilgi-katalogu-authenticated";
+const VALID_USERNAME = "admin";
+const VALID_PASSWORD = "43214321";
 
 function setStatus(message, type = "ready") {
   ui.status.className = `status ${type}`;
   ui.status.lastElementChild.textContent = message;
+}
+
+function setLoginStatus(message, type = "ready") {
+  ui.loginStatus.className = `auth-status ${type}`;
+  ui.loginStatus.lastElementChild.textContent = message;
 }
 
 function formatNumber(value) {
@@ -44,6 +60,29 @@ function selectedBrand() {
 function refreshSearchState() {
   ui.clear.hidden = !ui.query.value;
   ui.search.disabled = !(catalog && ui.brand.value && ui.model.value && ui.query.value.trim());
+}
+
+function isAuthenticated() {
+  return sessionStorage.getItem(AUTH_STORAGE_KEY) === "true";
+}
+
+function setAuthenticated(value) {
+  if (value) {
+    sessionStorage.setItem(AUTH_STORAGE_KEY, "true");
+    return;
+  }
+  sessionStorage.removeItem(AUTH_STORAGE_KEY);
+}
+
+function updateAuthView(authenticated) {
+  ui.authShell.hidden = authenticated;
+  ui.appShell.hidden = !authenticated;
+}
+
+function initializeApp() {
+  if (appInitialized) return;
+  appInitialized = true;
+  loadCatalog();
 }
 
 async function loadCatalog() {
@@ -60,6 +99,24 @@ async function loadCatalog() {
     setStatus(`Katalog yüklenemedi: ${error.message}`, "error");
   }
 }
+
+ui.loginForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const username = ui.username.value.trim();
+  const password = ui.password.value;
+
+  if (username !== VALID_USERNAME || password !== VALID_PASSWORD) {
+    ui.password.value = "";
+    ui.password.focus();
+    setLoginStatus("Kullanıcı adı veya şifre hatalı.", "error");
+    return;
+  }
+
+  setAuthenticated(true);
+  updateAuthView(true);
+  setLoginStatus("Giriş başarılı.", "ready");
+  initializeApp();
+});
 
 ui.brand.addEventListener("change", () => {
   ui.model.replaceChildren();
@@ -225,6 +282,11 @@ ui.form.addEventListener("submit", async (event) => {
   }
 });
 
+ui.logout.addEventListener("click", () => {
+  setAuthenticated(false);
+  window.location.reload();
+});
+
 ui.copy.addEventListener("click", async () => {
   if (selectedIndex < 0) return;
   const item = currentResults[selectedIndex];
@@ -237,4 +299,9 @@ ui.copy.addEventListener("click", async () => {
   }
 });
 
-loadCatalog();
+updateAuthView(isAuthenticated());
+if (isAuthenticated()) {
+  initializeApp();
+} else {
+  setLoginStatus("Devam etmek için giriş yapın.");
+}
